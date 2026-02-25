@@ -64,7 +64,7 @@ export default function Home() {
     };
 
     fetchCurrent();
-    intervalRef.current = setInterval(fetchCurrent, 5000);
+    intervalRef.current = setInterval(fetchCurrent, 1000);
     return () => clearInterval(intervalRef.current);
   }, [userId]);
 
