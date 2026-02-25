@@ -90,7 +90,7 @@ export default function Home() {
     }
     timerRef.current = setInterval(() => {
       if (startTimeRef.current) setElapsed(Date.now() - startTimeRef.current);
-    }, 1000);
+    }, 250);
     return () => clearInterval(timerRef.current);
   }, [track?.isPlaying, track?.title]);
 
@@ -295,18 +295,19 @@ export default function Home() {
                       transition: "width 1s linear",
                     }} />
                   </div>
-                  {track.durationMs > 0 && (
-                    <span style={{
-                      fontSize: 15,
-                      color: "#fff",
-                      whiteSpace: "nowrap",
-                      fontVariantNumeric: "tabular-nums",
-                      letterSpacing: "0.3px",
-                      flexShrink: 0,
-                    }}>
-                      {formatTime(elapsed)}<span style={{ color: "#b7b7b7" }}> / </span>{formatTime(track.durationMs)}
-                    </span>
-                  )}
+                  <span style={{
+                    fontSize: 15,
+                    color: "#fff",
+                    whiteSpace: "nowrap",
+                    fontVariantNumeric: "tabular-nums",
+                    letterSpacing: "0.3px",
+                    flexShrink: 0,
+                  }}>
+                    {formatTime(elapsed)}
+                    {track.durationMs > 0 && (
+                      <><span style={{ color: "#b7b7b7" }}> / </span>{formatTime(track.durationMs)}</>
+                    )}
+                  </span>
                 </div>
               </>
             ) : (
