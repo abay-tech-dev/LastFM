@@ -17,7 +17,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "User not found" });
     }
 
-    const { data } = await axios.get("http://ws.audioscrobbler.com/2.0/", {
+    const { data } = await axios.get("https://ws.audioscrobbler.com/2.0/", {
       params: {
         method: "user.getRecentTracks",
         user: user.lastfmUsername,
@@ -41,6 +41,17 @@ export default async function handler(req, res) {
 
     const albumImage = track.image?.find((img) => img.size === "extralarge")?.["#text"] || "";
 
+    const { data: trackInfo } = await axios.get("https://ws.audioscrobbler.com/2.0/", {
+      params: {
+        method: "track.getInfo",
+        artist: track.artist["#text"],
+        track: track.name,
+        api_key: process.env.LASTFM_API_KEY,
+        format: "json",
+      },
+    });
+    const durationMs = parseInt(trackInfo?.track?.duration) || 0;
+
     return res.status(200).json({
       isPlaying: true,
       title: track.name,
@@ -48,6 +59,7 @@ export default async function handler(req, res) {
       album: track.album["#text"],
       albumImageUrl: albumImage,
       songUrl: track.url,
+      durationMs,
     });
   } catch (err) {
     console.error("Last.fm current error:", err.response?.data || err.message);
