@@ -17,10 +17,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Signature : paramètres triés alphabétiquement + secret
     const sig = md5(`api_key${api_key}methodauth.getSessiontoken${token}${secret}`);
 
-    const { data } = await axios.get("http://ws.audioscrobbler.com/2.0/", {
+    const { data } = await axios.get("https://ws.audioscrobbler.com/2.0/", {
       params: {
         method: "auth.getSession",
         api_key,
@@ -30,8 +29,11 @@ export default async function handler(req, res) {
       },
     });
 
+    if (data.error) {
+      throw new Error(`Last.fm error ${data.error}: ${data.message}`);
+    }
+
     const { name: lastfmUsername, key: sessionKey } = data.session;
-    console.log("Last.fm session obtenue pour:", lastfmUsername);
 
     await dbConnect();
     await User.findOneAndUpdate(
