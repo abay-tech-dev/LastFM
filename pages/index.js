@@ -24,6 +24,47 @@ function AudioBars() {
   );
 }
 
+function ScrollingText({ text, style }) {
+  const containerRef = useRef(null);
+  const [anim, setAnim] = useState(null);
+
+  useEffect(() => {
+    setAnim(null);
+    const id = requestAnimationFrame(() => {
+      const c = containerRef.current;
+      if (!c) return;
+      const overflow = c.scrollWidth - c.clientWidth;
+      if (overflow > 1) {
+        setAnim({ px: overflow, duration: Math.max(overflow / 50, 3) });
+      }
+    });
+    return () => cancelAnimationFrame(id);
+  }, [text]);
+
+  const animName = anim ? `marquee-${anim.px}` : "";
+
+  return (
+    <div ref={containerRef} style={{ overflow: "hidden", ...style }}>
+      <span key={text} style={{
+        display: "inline-block",
+        whiteSpace: "nowrap",
+        animation: anim ? `${animName} ${anim.duration + 4}s ease-in-out infinite` : "none",
+      }}>
+        {text}
+      </span>
+      {anim && (
+        <style>{`
+          @keyframes ${animName} {
+            0%, 15% { transform: translateX(0); }
+            55%, 80% { transform: translateX(-${anim.px}px); }
+            100% { transform: translateX(0); }
+          }
+        `}</style>
+      )}
+    </div>
+  );
+}
+
 function formatTime(ms) {
   const totalSec = Math.floor(ms / 1000);
   const min = Math.floor(totalSec / 60);
@@ -243,40 +284,25 @@ export default function Home() {
               }} />
             ) : track?.isPlaying ? (
               <>
-                <div style={{
+                <ScrollingText text={track.title} style={{
                   fontWeight: 700,
                   fontSize: 30,
                   color: "#fff",
                   letterSpacing: "-.5px",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
                   lineHeight: 1.2,
-                }}>
-                  {track.title}
-                </div>
-                <div style={{
+                }} />
+                <ScrollingText text={track.artist} style={{
                   color: GREEN,
                   fontWeight: 600,
                   fontSize: 19,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
                   marginTop: 2,
-                }}>
-                  {track.artist}
-                </div>
-                <div style={{
+                }} />
+                <ScrollingText text={track.album} style={{
                   color: "#b7b7b7",
                   fontWeight: 400,
                   fontSize: 16,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
                   marginTop: 1,
-                }}>
-                  {track.album}
-                </div>
+                }} />
 
                 {/* PROGRESS BAR + TIMER */}
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 14 }}>
