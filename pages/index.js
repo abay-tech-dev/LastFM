@@ -26,26 +26,28 @@ function AudioBars() {
 
 function ScrollingText({ text, style }) {
   const containerRef = useRef(null);
+  const textRef = useRef(null);
   const [anim, setAnim] = useState(null);
 
   useEffect(() => {
     setAnim(null);
-    const id = requestAnimationFrame(() => {
+    const id = setTimeout(() => {
       const c = containerRef.current;
-      if (!c) return;
-      const overflow = c.scrollWidth - c.clientWidth;
+      const t = textRef.current;
+      if (!c || !t) return;
+      const overflow = t.offsetWidth - c.clientWidth;
       if (overflow > 1) {
         setAnim({ px: overflow, duration: Math.max(overflow / 50, 3) });
       }
-    });
-    return () => cancelAnimationFrame(id);
+    }, 50);
+    return () => clearTimeout(id);
   }, [text]);
 
   const animName = anim ? `marquee-${anim.px}` : "";
 
   return (
     <div ref={containerRef} style={{ overflow: "hidden", ...style }}>
-      <span key={text} style={{
+      <span ref={textRef} key={text} style={{
         display: "inline-block",
         whiteSpace: "nowrap",
         animation: anim ? `${animName} ${anim.duration + 4}s ease-in-out infinite` : "none",
@@ -142,7 +144,7 @@ export default function Home() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#111",
+        background: "transparent",
         fontFamily: "'Inter', system-ui, sans-serif",
       }}>
         <div style={{
@@ -191,7 +193,7 @@ export default function Home() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "#111",
+      background: "transparent",
       fontFamily: "'Inter', system-ui, sans-serif",
     }}>
       <div style={{
