@@ -111,29 +111,27 @@ export default function Home() {
     return () => clearInterval(intervalRef.current);
   }, [userId]);
 
-  // Reset elapsed timer when track changes
+  // Reset elapsed timer when track changes and start local counter
   useEffect(() => {
-    if (track?.isPlaying && track.title !== currentTitleRef.current) {
-      currentTitleRef.current = track.title;
-      startTimeRef.current = Date.now();
-      setElapsed(0);
-    }
+    clearInterval(timerRef.current);
+
     if (!track?.isPlaying) {
       currentTitleRef.current = null;
       startTimeRef.current = null;
       setElapsed(0);
-    }
-  }, [track?.title, track?.isPlaying]);
-
-  // Local elapsed counter
-  useEffect(() => {
-    if (!track?.isPlaying) {
-      clearInterval(timerRef.current);
       return;
     }
+
+    if (track.title !== currentTitleRef.current) {
+      currentTitleRef.current = track.title;
+      startTimeRef.current = Date.now();
+      setElapsed(0);
+    }
+
     timerRef.current = setInterval(() => {
       if (startTimeRef.current) setElapsed(Date.now() - startTimeRef.current);
     }, 250);
+
     return () => clearInterval(timerRef.current);
   }, [track?.isPlaying, track?.title]);
 
