@@ -305,36 +305,36 @@ export default function Home() {
                 }} />
 
                 {/* PROGRESS BAR + TIMER */}
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 14 }}>
-                  <div style={{
-                    flex: 1,
-                    height: 6,
-                    borderRadius: 3,
-                    background: "#ffffff33",
-                    overflow: "hidden",
-                  }}>
+                {track.durationMs > 0 && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 14 }}>
                     <div style={{
-                      height: "100%",
-                      width: `${progress * 100}%`,
-                      background: "#fff",
+                      flex: 1,
+                      height: 6,
                       borderRadius: 3,
-                      transition: "width 1s linear",
-                    }} />
-                  </div>
-                  <span style={{
-                    fontSize: 15,
-                    color: "#fff",
-                    whiteSpace: "nowrap",
-                    fontVariantNumeric: "tabular-nums",
-                    letterSpacing: "0.3px",
-                    flexShrink: 0,
-                  }}>
-                    {formatTime(elapsed)}
-                    {track.durationMs > 0 && (
+                      background: "#ffffff33",
+                      overflow: "hidden",
+                    }}>
+                      <div style={{
+                        height: "100%",
+                        width: `${progress * 100}%`,
+                        background: "#fff",
+                        borderRadius: 3,
+                        transition: "width 1s linear",
+                      }} />
+                    </div>
+                    <span style={{
+                      fontSize: 15,
+                      color: "#fff",
+                      whiteSpace: "nowrap",
+                      fontVariantNumeric: "tabular-nums",
+                      letterSpacing: "0.3px",
+                      flexShrink: 0,
+                    }}>
+                      {formatTime(elapsed)}
                       <><span style={{ color: "#b7b7b7" }}> / </span>{formatTime(track.durationMs)}</>
-                    )}
-                  </span>
-                </div>
+                    </span>
+                  </div>
+                )}
               </>
             ) : (
               <div style={{ color: "#aaa", fontStyle: "italic", fontSize: 18 }}>
